@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Putting AI Agents to Work — 75-min Lecture Plan</title>
+<style>
+  :root{
+    --bg:#faf7f2; --surface:#ffffff; --ink:#211c16; --muted:#6f665b;
+    --line:#e7ddcf; --accent:#c2683d; --accent-soft:#f3e3d8;
+    --inner:#2f7d8c; --inner-soft:#dcecef; --outer:#c2683d; --outer-soft:#f3e3d8;
+    --warn:#b4452f; --warn-soft:#fbe7e0;
+    --shadow:0 1px 2px rgba(40,30,20,.05),0 6px 22px rgba(40,30,20,.06);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent)}
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:50;transition:width .1s linear}
+
+  header.hero{padding:46px 24px 30px;max-width:1180px;margin:0 auto}
+  .kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1{font-size:clamp(28px,4.4vw,46px);line-height:1.08;margin:.25em 0 .35em;letter-spacing:-.02em}
+  .sub{font-size:18px;color:var(--muted);max-width:780px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .pill{background:var(--surface);border:1px solid var(--line);border-radius:999px;
+    padding:7px 14px;font-size:13.5px;box-shadow:var(--shadow)}
+  .pill b{color:var(--ink)}
+
+  .layout{max-width:1180px;margin:0 auto;padding:8px 24px 80px;display:grid;
+    grid-template-columns:256px 1fr;gap:34px;align-items:start}
+
+  nav.toc{position:sticky;top:18px;align-self:start}
+  .toc-head{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:8px 6px 10px;font-weight:700}
+  .toc a{display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--muted);
+    padding:8px 10px;border-radius:10px;font-size:14px;border-left:3px solid transparent}
+  .toc a .t{font-variant-numeric:tabular-nums;font-size:12px;color:var(--accent);min-width:36px;font-weight:700}
+  .toc a:hover{background:var(--surface)}
+  .toc a.active{background:var(--surface);color:var(--ink);border-left-color:var(--accent);box-shadow:var(--shadow)}
+  .toolbar{margin:14px 6px 0;display:flex;flex-direction:column;gap:8px}
+  .btn{cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+    border-radius:10px;padding:9px 12px;font-size:13.5px;text-align:left;box-shadow:var(--shadow)}
+  .btn:hover{border-color:var(--accent)}
+  .btn.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  main{min-width:0}
+  .seg{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 28px;margin-bottom:20px;box-shadow:var(--shadow);scroll-margin-top:18px}
+  .seg-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .time{font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent);font-size:14px;
+    background:var(--accent-soft);padding:4px 12px;border-radius:999px}
+  .dur{font-size:13px;color:var(--muted)}
+  .seg h2{font-size:23px;margin:.15em 0 .4em;letter-spacing:-.01em}
+  .goal{background:#fbf6ef;border:1px dashed var(--line);border-radius:12px;padding:11px 14px;margin:0 0 16px;font-size:15px}
+  .seg h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 8px}
+  .seg ul{margin:0 0 4px;padding-left:20px}
+  .seg li{margin:7px 0}
+  .badge{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;
+    background:#eef4f5;color:var(--inner);border:1px solid #cfe2e5;vertical-align:middle;margin-left:4px}
+  .badge.news{background:#fef3e9;color:var(--outer);border-color:#f1d8c4}
+
+  .callout{border-radius:12px;padding:13px 16px;margin:14px 0;font-size:15px;border:1px solid}
+  .ex{background:#fff8f1;border-color:#f1d8c4}
+  .ex .lbl{color:var(--outer)}
+  .interact{background:#eef5f6;border-color:#cfe2e5}
+  .interact .lbl{color:var(--inner)}
+  .lbl{font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:3px}
+  .script{background:#211c16;color:#f3ede3;border-radius:12px;padding:13px 16px;margin:14px 0;font-size:14.5px;font-style:italic}
+  .script .lbl{color:#e8a87c;font-style:normal}
+  body.hide-script .script{display:none}
+
+  /* basics stack */
+  .stack{display:flex;flex-direction:column;gap:10px;margin:6px 0}
+  .layer{display:grid;grid-template-columns:130px 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .layer .k{background:#211c16;color:#fff;padding:13px 14px;font-weight:700;font-size:15px;display:flex;flex-direction:column;justify-content:center}
+  .layer .k small{font-weight:500;color:#d8c8b4;font-size:11.5px;margin-top:3px;letter-spacing:.04em;text-transform:uppercase}
+  .layer .v{padding:12px 16px;font-size:14.5px;background:#fdfaf5}
+  .layer .v .car{color:var(--accent);font-weight:700}
+  .layer.agent .k{background:var(--accent)}
+
+  .mm{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+  .mm .c{border:1px solid var(--line);border-radius:12px;padding:12px 15px;background:#fdfaf5;font-size:14.5px}
+  .mm .c b{color:var(--accent)}
+
+  /* augment vs replace */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
+  .vs .c{border-radius:12px;padding:15px 17px;border:1px solid}
+  .vs .pilot{background:var(--inner-soft);border-color:#cfe2e5}
+  .vs .auto{background:var(--warn-soft);border-color:#eccabf}
+  .vs h4{margin:0 0 6px;font-size:16px}
+  .vs .pilot h4{color:var(--inner)} .vs .auto h4{color:var(--warn)}
+
+  /* 4D diagram + loops */
+  .diagram{width:100%;height:auto;margin:8px 0 4px}
+  .loops{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  .loopcard{border-radius:12px;padding:14px 16px;font-size:14.5px;border:1px solid}
+  .loopcard.inner{background:var(--inner-soft);border-color:#cfe2e5}
+  .loopcard.outer{background:var(--outer-soft);border-color:#f1d8c4}
+  .loopcard h4{margin:0 0 4px;font-size:15px}
+  .loopcard.inner h4{color:var(--inner)} .loopcard.outer h4{color:var(--outer)}
+
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:6px}
+  .three .c{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:#fdfaf5}
+  .three .c b{display:block;color:var(--accent);font-size:14px;margin-bottom:3px}
+  .three .c span{font-size:14px}
+
+  /* task-type table */
+  .tt{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:8px 0}
+  .tt .row{display:grid;grid-template-columns:96px 1fr 1fr 1fr 1fr}
+  .tt .row>div{padding:10px 12px;font-size:13.5px;border-bottom:1px solid var(--line)}
+  .tt .head>div{background:#211c16;color:#fff;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  .tt .row .rh{font-weight:700;background:#fbf6ef}
+  .tt .row:last-child>div{border-bottom:none}
+
+  /* pitfalls grid */
+  .pits{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  .pit{border:1px solid #eccabf;background:#fdf3ef;border-radius:12px;padding:13px 15px}
+  .pit h4{margin:0 0 4px;color:var(--warn);font-size:15px}
+  .pit .tell{font-size:13.5px;color:var(--muted);margin:0 0 6px}
+  .pit .fix{font-size:13.5px}
+  .pit .fix b{color:#2f7d8c}
+
+  footer{max-width:1180px;margin:0 auto;padding:10px 24px 60px;color:var(--muted);font-size:13px}
+  @media(max-width:880px){
+    .layout{grid-template-columns:1fr}
+    nav.toc{position:static;order:2;margin-top:10px}
+    .toc a{border-left:none;border-bottom:1px solid var(--line)}
+    .loops,.three,.mm,.vs,.pits{grid-template-columns:1fr}
+    .layer{grid-template-columns:104px 1fr}
+    .tt .row{grid-template-columns:1fr}
+    .tt .row>div{border-bottom:1px solid var(--line)}
+    .tt .head{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="bar"></div>
+
+<header class="hero">
+  <div class="kicker">75-Minute Lecture · Facilitator Plan</div>
+  <h1>Putting AI Agents to Work</h1>
+  <p class="sub">From "what even is an agent?" to "how do we adopt one without it embarrassing us?" — taught with one chauffeur analogy, the 4D Framework, and a running example: <b>a daily industry newsletter</b> that an agent drafts for you each morning.</p>
+  <div class="meta">
+    <span class="pill">⏱ <b>75 min</b> lecture</span>
+    <span class="pill">👥 Audience: <b>employees & teams</b></span>
+    <span class="pill">🚗 Analogy: <b>car · driver · chauffeur</b></span>
+    <span class="pill">📰 Anchor: <b>daily newsletter (AI augments you)</b></span>
+    <span class="pill">➡️ Then a <b>2-hour build workshop</b></span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Agenda">
+    <div class="toc-head">Run of show</div>
+    <a href="#s1"><span class="t">0:00</span> Open</a>
+    <a href="#s2"><span class="t">0:05</span> The basics (chauffeur)</a>
+    <a href="#s3"><span class="t">0:20</span> Agents for business</a>
+    <a href="#s4"><span class="t">0:32</span> Adopt with the 4 Ds</a>
+    <a href="#s5"><span class="t">0:50</span> Inner &amp; outer loop</a>
+    <a href="#s6"><span class="t">1:05</span> Where it goes wrong</a>
+    <a href="#s7"><span class="t">1:13</span> Close → workshop</a>
+    <div class="toolbar">
+      <button class="btn on" id="toggleScript">🎤 Facilitator script: ON</button>
+      <button class="btn" onclick="window.print()">🖨 Print / save PDF</button>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- 1 -->
+    <section class="seg" id="s1">
+      <div class="seg-top"><span class="time">0:00 – 0:05</span><span class="dur">5 min · set the frame</span></div>
+      <h2>1 · Open: why this, why now</h2>
+      <p class="goal"><strong>Goal:</strong> Lower the intimidation, set the arc, and promise a concrete payoff.</p>
+      <h3>Talking points</h3>
+      <ul>
+        <li>You don't need to be technical — you need to be <b>fluent</b>: using AI in ways that are <b>efficient, effective, ethical, and safe</b>.</li>
+        <li>Today's arc: (1) how this tech actually works — no hand-waving, (2) how <b>agents</b> fit into a business, (3) how to <b>adopt them well</b> with the 4D Framework, and (4) <b>where it goes wrong</b>.</li>
+        <li>One running example throughout: a <b>daily industry newsletter</b> an agent drafts for you. Then a 2-hour workshop where you build it.</li>
+      </ul>
+      <div class="callout ex"><span class="lbl">💡 Memorable line</span>"We'll go from 'what even <em>is</em> an agent' to 'here's how to put one to work without it embarrassing you.'"</div>
+      <div class="script"><span class="lbl">🎤 Say this</span>"Quick gut-check: who's used an AI tool and gotten back something almost-but-not-quite right? Keep that feeling in mind — by the end you'll know exactly why it happens and how to close the gap on purpose."</div>
+    </section>
+
+    <!-- 2 -->
+    <section class="seg" id="s2">
+      <div class="seg-top"><span class="time">0:05 – 0:20</span><span class="dur">15 min · foundations</span></div>
+      <h2>2 · The basics — one car, one chauffeur</h2>
+      <p class="goal"><strong>Goal:</strong> Everyone can define <b>model, harness, tools, skills, agent</b> — and why the distinctions matter in practice. Build the analogy piece by piece.</p>
+
+      <div class="stack">
+        <div class="layer"><div class="k">Model<small>the brain</small></div><div class="v"><span class="car">The driving intelligence.</span> Raw capability — judgment, language, reasoning. On its own it can think, but it can't move anything yet. Models also have a <b>knowledge cutoff</b> (it learned the city as it was a year ago — new roads aren't on its mental map) and it works by predicting the most likely next move (so it can take a confident wrong turn).</div></div>
+        <div class="layer"><div class="k">Harness<small>the car</small></div><div class="v"><span class="car">The car itself — chassis, dashboard, pedals.</span> The brain can't drive without a body. The harness is the software that wraps the model so it can take real steps and reach the controls. <b>Claude Code and Cowork are harnesses.</b></div></div>
+        <div class="layer"><div class="k">Tools<small>the instruments</small></div><div class="v"><span class="car">GPS, fuel gauge, wipers, the phone link.</span> Specific things the car can use to reach outside itself: look up a route (web search), check the tank (read a file), make a call (send an email). <b>Tools are how an agent touches your files, the web, your calendar.</b></div></div>
+        <div class="layer"><div class="k">Skills<small>the routes</small></div><div class="v"><span class="car">Learned routes &amp; maneuvers</span> — "the route to the airport," "how to parallel park." A skill is a <b>documented, reusable procedure</b>: e.g., "how we build the newsletter." Define it once, reuse it forever.</div></div>
+        <div class="layer agent"><div class="k">Agent<small>the chauffeur</small></div><div class="v"><b>Put it together.</b> You say "take me to the airport." The chauffeur — brain (model) driving the car (harness), reading the GPS &amp; gauges (tools), following known routes (skills) — handles the <b>whole trip</b> and adjusts to traffic, without you narrating every turn. <b>That's an agent: give it a goal, it plans, executes multiple steps, and self-corrects.</b></div></div>
+      </div>
+
+      <h3>The one nuance to call out: not all brains see the same</h3>
+      <div class="mm">
+        <div class="c"><b>Text-only model</b> — a driver who can only follow <em>written</em> turn-by-turn directions. Hand it a photo of a road sign or a scanned PDF and it's stuck.</div>
+        <div class="c"><b>Multimodal model</b> — a driver who can also <em>see</em> the road through cameras (and hear). It can read your screenshot, your scanned invoice, your chart.</div>
+      </div>
+
+      <div class="callout ex"><span class="lbl">💡 Memorable line</span>"A chatbot answers a question. An <em>agent takes the wheel</em>."</div>
+      <div class="script"><span class="lbl">🎤 Say this</span>"Why care about these five words? Because when something goes wrong, you'll know <em>where</em>: a bad answer is the brain; can't open your file is a missing tool; does the same task inconsistently means you never wrote the skill down."</div>
+    </section>
+
+    <!-- 3 -->
+    <section class="seg" id="s3">
+      <div class="seg-top"><span class="time">0:20 – 0:32</span><span class="dur">12 min · business framing</span></div>
+      <h2>3 · How agents create value in a business</h2>
+      <p class="goal"><strong>Goal:</strong> Two modes, one spectrum — and where to start.</p>
+      <div class="vs">
+        <div class="c pilot"><h4>① Augment a human — co-pilot</h4>The agent does the legwork; a person steers and signs off. <span class="badge news">our example</span> The newsletter: AI scans sources, drafts, and formats; <b>you</b> pick the angle and hit publish. This is where most safe, fast wins live.</div>
+        <div class="c auto"><h4>② Replace a task — autopilot</h4>The agent runs the whole loop with little human touch — e.g., <b>agentic customer service</b>: read the ticket, look up the order, issue the refund, reply. Higher leverage, higher risk; needs guardrails, monitoring, and a clear path to a human.</div>
+      </div>
+      <ul>
+        <li>It's a <b>spectrum</b>, not a switch. Start in the co-pilot's seat, earn trust, then hand over narrow, well-bounded routes.</li>
+        <li>The real question isn't "<em>can</em> it do this?" — it's "<em>should</em> it, and how much rope do I give it?"</li>
+      </ul>
+      <div class="callout ex"><span class="lbl">💡 Memorable line</span>"Co-pilot vs. autopilot. Start in the co-pilot's seat; earn your way to autopilot <em>one route at a time</em>."</div>
+      <div class="callout interact"><span class="lbl">🙋 Quick think (20 sec)</span>"Picture one task from your week. Is it a co-pilot job or an autopilot job — and why? Hold that thought; we'll decide it properly with the 4 Ds."</div>
+      <div class="script"><span class="lbl">🎤 Say this</span>"Agentic customer service is real and powerful — but notice it's the deep end. Today we're teaching you to swim in the shallow end first, because that's where you get value this week without risk."</div>
+    </section>
+
+    <!-- 4 -->
+    <section class="seg" id="s4">
+      <div class="seg-top"><span class="time">0:32 – 0:50</span><span class="dur">18 min · the framework</span></div>
+      <h2>4 · Adopting agents well — the 4D Framework</h2>
+      <p class="goal"><strong>Goal:</strong> Give them the playbook, then prove it generalizes across creative, coding, and admin work.</p>
+      <svg class="diagram" viewBox="0 0 900 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="4D framework diagram">
+        <defs>
+          <marker id="ar" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7a6f60"/></marker>
+          <marker id="arI" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#2f7d8c"/></marker>
+        </defs>
+        <rect x="20" y="120" width="170" height="90" rx="14" fill="#f3e3d8" stroke="#d9a07c"/>
+        <text x="105" y="150" text-anchor="middle" font-size="17" font-weight="700" fill="#a8542b">Delegation</text>
+        <text x="105" y="172" text-anchor="middle" font-size="12" fill="#6f665b">Should AI do this?</text>
+        <text x="105" y="189" text-anchor="middle" font-size="12" fill="#6f665b">Right task · tool · data</text>
+        <rect x="710" y="120" width="170" height="90" rx="14" fill="#f3e3d8" stroke="#d9a07c"/>
+        <text x="795" y="150" text-anchor="middle" font-size="17" font-weight="700" fill="#a8542b">Diligence</text>
+        <text x="795" y="172" text-anchor="middle" font-size="12" fill="#6f665b">Verify · disclose</text>
+        <text x="795" y="189" text-anchor="middle" font-size="12" fill="#6f665b">Own the result</text>
+        <rect x="345" y="40" width="210" height="78" rx="14" fill="#dcecef" stroke="#7fb6c0"/>
+        <text x="450" y="70" text-anchor="middle" font-size="17" font-weight="700" fill="#2f7d8c">Description</text>
+        <text x="450" y="92" text-anchor="middle" font-size="12" fill="#6f665b">Say what good looks like</text>
+        <text x="450" y="108" text-anchor="middle" font-size="12" fill="#6f665b">Product · Process · Performance</text>
+        <rect x="345" y="212" width="210" height="78" rx="14" fill="#dcecef" stroke="#7fb6c0"/>
+        <text x="450" y="242" text-anchor="middle" font-size="17" font-weight="700" fill="#2f7d8c">Discernment</text>
+        <text x="450" y="264" text-anchor="middle" font-size="12" fill="#6f665b">Judge what came back</text>
+        <text x="450" y="280" text-anchor="middle" font-size="12" fill="#6f665b">Edit, don't just read</text>
+        <line x1="470" y1="118" x2="470" y2="212" stroke="#2f7d8c" stroke-width="2.5" marker-end="url(#arI)"/>
+        <line x1="430" y1="212" x2="430" y2="118" stroke="#2f7d8c" stroke-width="2.5" marker-end="url(#arI)"/>
+        <text x="556" y="168" font-size="12.5" font-weight="700" fill="#2f7d8c">refine ⇄</text>
+        <line x1="190" y1="150" x2="340" y2="95" stroke="#7a6f60" stroke-width="2" marker-end="url(#ar)"/>
+        <line x1="560" y1="255" x2="708" y2="180" stroke="#7a6f60" stroke-width="2" marker-end="url(#ar)"/>
+        <path d="M795 210 C 795 305, 105 305, 105 212" fill="none" stroke="#c2683d" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#ar)"/>
+        <text x="450" y="324" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c2683d">It's a loop, not a line</text>
+      </svg>
+      <div class="loops">
+        <div class="loopcard outer"><h4>Outer loop · the bookends</h4><b>Delegation → … → Diligence.</b> Before: decide it's worth handing off (right task, tool, data). After: own whatever goes out.</div>
+        <div class="loopcard inner"><h4>Inner loop · the conversation</h4><b>Description ⇄ Discernment.</b> Minute-to-minute: say what you want, judge what comes back, refine, repeat.</div>
+      </div>
+
+      <h3>Same four moves, any kind of work</h3>
+      <div class="tt">
+        <div class="row head"><div></div><div>Delegation</div><div>Description</div><div>Discernment</div><div>Diligence</div></div>
+        <div class="row"><div class="rh">🎨 Creative<br><small>campaign / newsletter copy</small></div>
+          <div>Hand off first drafts &amp; variations; keep brand voice &amp; final taste.</div>
+          <div>Give the brand guide, audience, tone, and 2–3 examples of "good."</div>
+          <div>On-brand? Clichés? Any made-up claim or stat?</div>
+          <div>You own what's published — fact-check &amp; get sign-off.</div></div>
+        <div class="row"><div class="rh">💻 Coding<br><small>script / bug fix / automation</small></div>
+          <div>Great for boilerplate, refactors, tests; keep architecture &amp; security calls.</div>
+          <div>Specify inputs/outputs, constraints, the stack/data.</div>
+          <div>Run it, read it, test edge cases — plausible-but-wrong is common.</div>
+          <div>Review before it touches production or real data.</div></div>
+        <div class="row"><div class="rh">🗂 Admin<br><small>summaries / scheduling / triage</small></div>
+          <div>High-volume, low-judgment tasks; keep approvals &amp; sensitive comms.</div>
+          <div>Define the format and exactly what to extract.</div>
+          <div>Verify names, dates, numbers; did it drop a key item?</div>
+          <div>Spot-check anything that goes to other people.</div></div>
+      </div>
+      <div class="callout ex"><span class="lbl">💡 Memorable line</span>"Same four moves whether you're writing a poem, a Python script, or an expense report."</div>
+      <div class="script"><span class="lbl">🎤 Say this</span>"Notice the pattern down every column: Delegation is 'keep the judgment, hand off the volume.' Discernment is 'it's confident even when it's wrong.' Those two truths carry across every job you have."</div>
+    </section>
+
+    <!-- 5 -->
+    <section class="seg" id="s5">
+      <div class="seg-top"><span class="time">0:50 – 1:05</span><span class="dur">15 min · the mechanics</span></div>
+      <h2>5 · Inside the loops <span class="badge news">newsletter</span></h2>
+      <p class="goal"><strong>Goal:</strong> Go deep on the daily mechanics with our anchor example.</p>
+
+      <h3>Inner loop — Description ⇄ Discernment</h3>
+      <p>Description = instructions for a brilliant, <em>literal</em> chauffeur who's never driven your town. Write it in three layers:</p>
+      <div class="three">
+        <div class="c"><b>Product</b><span>A daily ~300-word newsletter, 5 stories on [our industry], each a headline + link.</span></div>
+        <div class="c"><b>Process</b><span>Scan these 6 sources → drop duplicates → 2-sentence summary each → rank by relevance to our customers → format.</span></div>
+        <div class="c"><b>Performance</b><span>Tone: sharp but friendly. Never invent a source or stat. Always include the link. Unsure → flag it, don't guess.</span></div>
+      </div>
+      <p>Discernment = read it like an <b>editor</b>, not a reader. Every correction ("don't summarize opinion pieces as news") folds <em>back into the skill</em> — that's the loop turning.</p>
+      <div class="callout ex"><span class="lbl">💡 Memorable contrast</span>"Summarize today's news" → generic mush. The three-layer version → something you'd actually send. <b>Same model, 10× the output — the difference is the description.</b></div>
+
+      <h3>Outer loop — Delegation ⇄ Diligence</h3>
+      <ul>
+        <li><b>Delegation:</b> AI scans, drafts, formats; the human keeps the <b>editorial voice</b> and the call to feature a sensitive story. Right data = a public news scan (low-risk); don't feed it confidential customer info.</li>
+        <li><b>Diligence:</b> review before send, <b>"schedule the draft, not the send,"</b> disclose AI's role where it matters, earn-down oversight as trust grows, and have a correction plan for the day a wrong fact slips out.</li>
+      </ul>
+      <div class="callout ex"><span class="lbl">📰 Memorable line</span>"Schedule the draft, not the send." The agent builds the issue at 6am; a human still hits publish at 8 — until you've seen enough good drafts to trust it further.</div>
+      <div class="script"><span class="lbl">🎤 Say this</span>"Think confident intern: brilliant, fast, occasionally makes things up with a straight face. Your job isn't to distrust it — it's to verify the links and keep your name meaning something."</div>
+    </section>
+
+    <!-- 6 -->
+    <section class="seg" id="s6">
+      <div class="seg-top"><span class="time">1:05 – 1:13</span><span class="dur">8 min · the scar-tissue list</span></div>
+      <h2>6 · Where it goes wrong — the pitfalls</h2>
+      <p class="goal"><strong>Goal:</strong> Name the failure modes so people recognize them in the wild. For each: the tell, then the defense.</p>
+      <div class="pits">
+        <div class="pit"><h4>🌀 Hallucination</h4><p class="tell">Confident, plausible, and wrong — fabricated sources, quotes, or stats. (Newsletter: a TechCrunch link that 404s.)</p><p class="fix"><b>Defense:</b> ask for sources, verify, spot-check before you rely on it.</p></div>
+        <div class="pit"><h4>🗑 Bad data in</h4><p class="tell">Garbage in, garbage out. Feed it a messy export or last year's price list and you get confident nonsense.</p><p class="fix"><b>Defense:</b> check your inputs first; clean the data before the agent touches it.</p></div>
+        <div class="pit"><h4>🔒 Not your data</h4><p class="tell">Pasting confidential customer or proprietary info into a tool you don't control, or that may train on your inputs.</p><p class="fix"><b>Defense:</b> strip identifiers, match the tool to the sensitivity, know the data policy.</p></div>
+        <div class="pit"><h4>📅 Stale knowledge</h4><p class="tell">The model's training has a cutoff date; it'll state old facts as current. Fatal for anything news-driven.</p><p class="fix"><b>Defense:</b> give it live sources/tools; ask it to flag anything time-sensitive.</p></div>
+        <div class="pit"><h4>🚀 Over-automation</h4><p class="tell">Wiring an agent to <em>act</em> — send, pay, delete — before it's earned trust.</p><p class="fix"><b>Defense:</b> start co-pilot; schedule drafts, not sends; add an off-switch.</p></div>
+        <div class="pit"><h4>😴 Over-trust &amp; skill fade</h4><p class="tell">Rubber-stamping output and slowly losing your own edge in the work.</p><p class="fix"><b>Defense:</b> stay the editor; make sure you can still explain what it did.</p></div>
+      </div>
+      <div class="callout ex"><span class="lbl">💡 Memorable line</span>"It's a confident intern with a faulty memory and no sense of what's confidential. Brilliant — but <em>you</em> sign the work."</div>
+      <div class="script"><span class="lbl">🎤 Say this</span>"Every one of these has bitten someone. None of them means 'don't use AI' — they mean 'use it with your eyes open.' That's the whole difference between a tool and a liability."</div>
+    </section>
+
+    <!-- 7 -->
+    <section class="seg" id="s7">
+      <div class="seg-top"><span class="time">1:13 – 1:15</span><span class="dur">2 min · close + bridge</span></div>
+      <h2>7 · Close → the workshop</h2>
+      <p class="goal"><strong>Goal:</strong> Recap the arc and hand them their one next action.</p>
+      <ul>
+        <li>The arc: <b>what the pieces are</b> (chauffeur) → <b>augment vs. replace</b> → the <b>4 Ds</b> → the <b>loops</b> → the <b>pitfalls</b>.</li>
+        <li>Next session (2 hrs): build your own augmenting skill — many of you will build exactly this newsletter — and schedule it. <b>Come with your task already chosen.</b></li>
+      </ul>
+      <div class="callout ex"><span class="lbl">💡 Closing line</span>"The goal isn't AI doing your job — it's AI doing the parts that free you for the parts <em>only you</em> can do."</div>
+      <div class="script"><span class="lbl">🎤 Say this</span>"One question to sit with until the workshop: what's the one repetitive thing you'd love to wake up to already done? Bring that. We'll build it."</div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Facilitator plan · 75 minutes · Basics (chauffeur analogy) → agents in business (co-pilot vs. autopilot) → 4D Framework across creative/coding/admin → inner &amp; outer loops → common pitfalls. Anchor example: a daily industry newsletter built as a scheduled skill. Precedes a 2-hour hands-on build workshop.
+</footer>
+
+<script>
+  const bar=document.getElementById('bar');
+  document.addEventListener('scroll',()=>{
+    const h=document.documentElement;
+    bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  },{passive:true});
+
+  const links=[...document.querySelectorAll('.toc a')];
+  const map={};links.forEach(a=>map[a.getAttribute('href').slice(1)]=a);
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      map[e.target.id]?.classList.add('active');
+    }});
+  },{rootMargin:'-20% 0px -70% 0px'});
+  document.querySelectorAll('.seg').forEach(s=>obs.observe(s));
+
+  const btn=document.getElementById('toggleScript');
+  btn.addEventListener('click',()=>{
+    document.body.classList.toggle('hide-script');
+    const off=document.body.classList.contains('hide-script');
+    btn.classList.toggle('on',!off);
+    btn.textContent=off?'🎤 Facilitator script: OFF':'🎤 Facilitator script: ON';
+  });
+</script>
+</body>
+</html>

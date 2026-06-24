@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Day with Your AI Chauffeur — Teaching Deck</title>
+<style>
+  :root{
+    --bg:#efe9df; --card:#fffdf9; --ink:#211c16; --muted:#6f665b;
+    --line:#e7ddcf; --accent:#c2683d; --accent-soft:#f5e4d8;
+    --teal:#2f7d8c; --teal-soft:#dcecef; --gold:#b8893f; --gold-soft:#f3e9d4;
+    --warn:#b4452f; --warn-soft:#fbe7e0;
+    --shadow:0 10px 40px rgba(40,30,20,.13);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:radial-gradient(120% 120% at 50% 0%,#f4efe6 0%,#e7dfd2 100%);
+    color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh}
+
+  .topbar{height:4px;background:transparent;position:relative;flex:0 0 auto}
+  .topbar i{position:absolute;left:0;top:0;height:100%;background:var(--accent);width:0;transition:width .25s ease}
+
+  .stage{flex:1 1 auto;display:flex;align-items:center;justify-content:center;padding:26px 22px}
+
+  .slide{display:none;width:min(960px,100%);min-height:540px;background:var(--card);
+    border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);
+    padding:42px 48px 30px;flex-direction:column}
+  .slide.active{display:flex;animation:fade .32s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .phase{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+  .slide h2{font-size:clamp(26px,3.4vw,38px);line-height:1.12;letter-spacing:-.02em;margin:0 0 16px}
+  .body{flex:1 1 auto;font-size:18px;color:#3a332b}
+  .body p{margin:0 0 12px;max-width:760px}
+  .body ul{margin:6px 0 0;padding-left:22px;max-width:760px}
+  .body li{margin:8px 0}
+  .lead{font-size:19px}
+  .accentword{color:var(--accent);font-weight:700}
+
+  /* section color identities */
+  .p1 .phase,.p1 .accentword{color:var(--teal)}
+  .p2 .phase,.p2 .accentword{color:var(--gold)}
+  .p3 .phase,.p3 .accentword{color:var(--accent)}
+
+  .takeaway{margin-top:22px;background:var(--accent-soft);border:1px solid #ecc9b3;border-radius:14px;
+    padding:13px 18px;font-size:17px;display:flex;gap:12px;align-items:flex-start}
+  .takeaway .tk{flex:0 0 auto;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:#fff;background:var(--accent);padding:5px 9px;border-radius:7px;margin-top:2px}
+  .takeaway b{color:var(--ink)}
+  .p1 .takeaway{background:var(--teal-soft);border-color:#bcdbe1} .p1 .takeaway .tk{background:var(--teal)}
+  .p2 .takeaway{background:var(--gold-soft);border-color:#e3cf9f} .p2 .takeaway .tk{background:var(--gold)}
+  /* interactive task bar — distinct from takeaways */
+  .takeaway.task{background:#e9e6f7;border-color:#cabff0}
+  .takeaway.task .tk{background:#6d59c4}
+  .takeaway.task b{color:#3f2f8a}
+
+  /* mini visual bits */
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 4px}
+  .chip{background:#fbf4ec;border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:15px}
+  .chip b{color:var(--accent)}
+  .p1 .chip b{color:var(--teal)} .p2 .chip b{color:var(--gold)}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+  .flow .node{background:#fbf4ec;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:15px;text-align:center}
+  .flow .node b{display:block;color:var(--accent);font-size:13px}
+  .flow .arr{color:var(--muted);font-weight:700}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+  .two .col{border-radius:14px;padding:14px 16px;border:1px solid;font-size:15.5px}
+  .two .pilot{background:var(--teal-soft);border-color:#bcdbe1}
+  .two .auto{background:var(--warn-soft);border-color:#eccabf}
+  .two h4{margin:0 0 5px;font-size:16px}
+  .two .pilot h4{color:var(--teal)} .two .auto h4{color:var(--warn)}
+  .layers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px}
+  .layers .c{background:#fbf4ec;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px}
+  .layers .c b{display:block;color:var(--accent);margin-bottom:3px}
+
+  /* title slide */
+  .title h1{font-size:clamp(34px,6vw,60px);line-height:1.05;letter-spacing:-.025em;margin:.1em 0 .25em}
+  .title .em{color:var(--accent)}
+  .title .ts{font-size:20px;color:var(--muted);max-width:680px}
+  .title .pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:26px}
+  .title .pills span{background:#fbf4ec;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px}
+
+  /* agenda slide */
+  .agenda{display:grid;grid-template-columns:1fr;gap:12px;margin-top:4px}
+  .agitem{display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:center;
+    border:1px solid var(--line);border-radius:14px;padding:14px 18px;background:#fbf4ec}
+  .agitem .num{font-size:34px;font-weight:800;text-align:center;line-height:1}
+  .agitem h4{margin:0 0 3px;font-size:19px}
+  .agitem p{margin:0;font-size:15px;color:var(--muted);max-width:none}
+  .ag1{border-left:6px solid var(--teal)} .ag1 .num{color:var(--teal)}
+  .ag2{border-left:6px solid var(--gold)} .ag2 .num{color:var(--gold)}
+  .ag3{border-left:6px solid var(--accent)} .ag3 .num{color:var(--accent)}
+
+  /* section dividers */
+  .divider{justify-content:center}
+  .divider .dnum{font-size:96px;font-weight:800;line-height:.9;letter-spacing:-.04em;margin-bottom:4px}
+  .divider h2{font-size:clamp(34px,5.4vw,54px);margin:0 0 10px}
+  .divider .dsub{font-size:21px;color:var(--muted);max-width:680px;margin:0}
+  .divider .cando{margin-top:16px;display:inline-flex;gap:8px;align-items:center;font-size:14px;
+    border-radius:999px;padding:7px 15px;font-weight:600}
+  .d1{border-left:10px solid var(--teal)} .d1 .dnum,.d1 .phase{color:var(--teal)}
+  .d1 .cando{background:var(--teal-soft);color:#1f5b67}
+  .d2{border-left:10px solid var(--gold)} .d2 .dnum,.d2 .phase{color:var(--gold)}
+  .d2 .cando{background:var(--gold-soft);color:#84621f}
+  .d3{border-left:10px solid var(--accent)} .d3 .dnum,.d3 .phase{color:var(--accent)}
+  .d3 .cando{background:var(--accent-soft);color:#9a4a25}
+
+  /* controls */
+  .controls{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:16px;padding:14px;color:var(--muted)}
+  .controls button{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    width:42px;height:42px;border-radius:50%;font-size:18px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .controls button:hover{border-color:var(--accent);color:var(--accent)}
+  .counter{font-variant-numeric:tabular-nums;font-size:14px;min-width:64px;text-align:center}
+  .ovbtn{width:auto !important;border-radius:999px !important;padding:0 16px;font-size:13.5px !important}
+  .hint{font-size:12.5px;color:#9a9082}
+
+  /* overview */
+  .overlay{position:fixed;inset:0;background:rgba(33,28,22,.55);display:none;z-index:30;padding:40px 24px;overflow:auto}
+  .overlay.on{display:block}
+  .ovpanel{max-width:900px;margin:0 auto;background:var(--card);border-radius:18px;padding:24px 26px;box-shadow:var(--shadow)}
+  .ovpanel h3{margin:0 0 14px;font-size:18px}
+  .ovgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .ovgrid a{display:flex;gap:10px;text-decoration:none;color:var(--ink);border:1px solid var(--line);
+    border-radius:10px;padding:9px 12px;font-size:14px;background:#fbf4ec}
+  .ovgrid a:hover{border-color:var(--accent)}
+  .ovgrid a.sec{background:#211c16;color:#fff;font-weight:700}
+  .ovgrid a .n{color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums;min-width:22px}
+  .ovgrid a.sec .n{color:#e8a87c}
+
+  @media(max-width:680px){
+    .slide{padding:30px 26px 24px;min-height:0}
+    .layers,.two{grid-template-columns:1fr}
+    .ovgrid{grid-template-columns:1fr}
+    .body{font-size:16.5px}
+  }
+</style>
+</head>
+<body>
+<div class="topbar"><i id="bar"></i></div>
+
+<div class="stage" id="stage">
+
+  <!-- 1 TITLE -->
+  <section class="slide title active">
+    <div class="phase">A 75-minute lesson · beginner-friendly</div>
+    <h1>A Day with Your <span class="em">AI Chauffeur</span></h1>
+    <p class="ts">How one person put an AI agent to work on a real task — and everything you need to understand to do the same.</p>
+    <div class="pills"><span>🧑‍💼 One person's story</span><span>🚗 One simple analogy</span><span>📰 One real example</span><span>📑 Three parts</span></div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>We'll learn AI by <b>watching someone use it for real work</b> — no jargon, no prior knowledge needed.</div></div>
+  </section>
+
+  <!-- 2 AGENDA -->
+  <section class="slide">
+    <div class="phase">📑 Agenda</div>
+    <h2>Today, in three parts</h2>
+    <div class="body">
+      <div class="agenda">
+        <div class="agitem ag1"><div class="num">1</div><div><h4>Under the hood — how AI works</h4><p>The parts you can't change, but have to understand to trust it.</p></div></div>
+        <div class="agitem ag2"><div class="num">2</div><div><h4>Tools &amp; skills — what you plug in</h4><p>Where the generic model becomes <em>yours</em> — this is what you customize.</p></div></div>
+        <div class="agitem ag3"><div class="num">3</div><div><h4>How to use it well — the 4 Ds</h4><p>The habits that turn AI into real, safe value. Where the payoff lives.</p></div></div>
+      </div>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>We go from <b>how it works → how you shape it → how you get value</b>.</div></div>
+  </section>
+
+  <!-- 3 MEET MAYA -->
+  <section class="slide">
+    <div class="phase">🧑‍💼 The setup</div>
+    <h2>Meet Maya. She's underwater.</h2>
+    <div class="body">
+      <p class="lead">Maya is a marketing coordinator. Every morning she spends <span class="accentword">90 minutes</span> reading industry news so she can email her team a summary.</p>
+      <ul>
+        <li>By the time she's done, her <em>actual</em> work hasn't started.</li>
+        <li>It's the same chore, every single day.</li>
+        <li>She dreads it — but the team relies on it.</li>
+      </ul>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>AI is for the <b>real, repetitive work you already have</b> — not science projects.</div></div>
+  </section>
+
+  <!-- 4 THE TASK -->
+  <section class="slide">
+    <div class="phase">🧑‍💼 The setup</div>
+    <h2>Her task: a daily industry newsletter</h2>
+    <div class="body">
+      <p>Not every job is a good fit for AI. A great <em>first</em> task passes a simple test — the <span class="accentword">4 R's</span>:</p>
+      <div class="chips">
+        <span class="chip"><b>Repetitive</b> — happens often</span>
+        <span class="chip"><b>Rule-ish</b> — has a pattern</span>
+        <span class="chip"><b>Reviewable</b> — you'd spot a mistake</span>
+        <span class="chip"><b>Reversible</b> — low stakes to try</span>
+      </div>
+      <p>Maya's newsletter checks all four. That's why it's the perfect place to start.</p>
+    </div>
+    <div class="takeaway task"><span class="tk">Task #1</span><div>List out some items from your own work that fall under the <b>4 R's</b>.</div></div>
+  </section>
+
+  <!-- ===== DIVIDER 1 ===== -->
+  <section class="slide divider d1">
+    <div class="phase">Part one</div>
+    <div class="dnum">01</div>
+    <h2>Under the hood</h2>
+    <p class="dsub">How AI actually works. You can't change these things — but understanding them is what lets you trust (and catch) it.</p>
+    <span class="cando">🔒 Mostly fixed — your job here is to <b>&nbsp;understand</b></span>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Know the machine before you drive it.</div></div>
+  </section>
+
+  <!-- ATTEMPT 1 (now opens Part 1) -->
+  <section class="slide p1">
+    <div class="phase">① Under the hood · first contact</div>
+    <h2>Attempt #1: she asks a chatbot</h2>
+    <div class="body">
+      <p>Maya types <em>"summarize today's industry news"</em> into a chatbot. She gets back:</p>
+      <ul>
+        <li>A generic paragraph — no links, no sources.</li>
+        <li>Nothing specific to <em>her</em> industry.</li>
+        <li>One "fact" she's pretty sure is wrong.</li>
+      </ul>
+      <p>Helpful-ish — but <em>why</em> did it do that? Let's look under the hood.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>A chatbot <b>answers a question</b>; understanding <em>why</em> it behaves this way is step one.</div></div>
+  </section>
+
+  <!-- 6 MODEL + CUTOFF -->
+  <section class="slide p1">
+    <div class="phase">① Under the hood · the brain</div>
+    <h2>Why it knew some things — but not today's</h2>
+    <div class="body">
+      <p>Behind the chatbot is a <span class="accentword">model</span> — a "brain" trained by reading enormous amounts of text.</p>
+      <p>🚗 Think of a driver who learned the city <em>a year ago</em>: they know the main roads, but not the street that opened last week. That date is the model's <span class="accentword">knowledge cutoff</span>.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>A model is a <b>brain trained on past text</b> — it doesn't automatically know what's new.</div></div>
+  </section>
+
+  <!-- 7 PREDICTION -->
+  <section class="slide p1">
+    <div class="phase">① Under the hood · how it "thinks"</div>
+    <h2>Why it sounded so sure — even when wrong</h2>
+    <div class="body">
+      <p>The model works by <span class="accentword">predicting the next most likely word</span>, over and over. That's what makes it fluent and confident.</p>
+      <p>It also means it can state a <em>made-up</em> fact just as smoothly as a true one. That wrong "fact" Maya spotted? This is exactly why it happens.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>It predicts likely words — so <b>confidence is not the same as being correct</b>.</div></div>
+  </section>
+
+  <!-- 8 MULTIMODAL -->
+  <section class="slide p1">
+    <div class="phase">① Under the hood · what it can sense</div>
+    <h2>Maya pastes a screenshot. Can it see?</h2>
+    <div class="body">
+      <p>It depends on the model:</p>
+      <div class="two">
+        <div class="col pilot"><h4>Text-only</h4>Reads words only. Hand it an image and it's blind — like a driver following <em>written</em> directions.</div>
+        <div class="col" style="background:#eef5ee;border:1px solid #cfe0cf"><h4 style="color:#3f7d4f">Multimodal</h4>Can also <em>see</em> pictures &amp; charts (some can hear too) — like a driver who can see the road.</div>
+      </div>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Only <b>multimodal</b> models can "see" images; text-only ones read words only.</div></div>
+  </section>
+
+  <!-- ===== DIVIDER 2 ===== -->
+  <section class="slide divider d2">
+    <div class="phase">Part two</div>
+    <div class="dnum">02</div>
+    <h2>Tools &amp; skills</h2>
+    <p class="dsub">How a generic brain becomes <em>your</em> assistant. This is the layer you actually plug in, connect, and customize.</p>
+    <span class="cando">🔧 Hands-on — this is where <b>&nbsp;you customize</b></span>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>The model is the same for everyone; what you connect to it is what makes it yours.</div></div>
+  </section>
+
+  <!-- 9 TOOLS -->
+  <section class="slide p2">
+    <div class="phase">② Tools &amp; skills · reaching out</div>
+    <h2>She needs today's news — give it tools</h2>
+    <div class="body">
+      <p>A brain alone can't fetch anything. <span class="accentword">Tools</span> are the instruments it can use to reach the outside world:</p>
+      <div class="chips">
+        <span class="chip">🔎 search the web</span>
+        <span class="chip">📄 open a file</span>
+        <span class="chip">✉️ send an email</span>
+        <span class="chip">📅 check a calendar</span>
+      </div>
+      <p>With a web-search tool, the model can pull <em>today's</em> headlines instead of guessing from memory. <b>You choose which tools to connect.</b></p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Tools let AI reach <b>beyond its memory</b> — your files, the web, your inbox.</div></div>
+  </section>
+
+  <!-- 10 AGENT + HARNESS -->
+  <section class="slide p2">
+    <div class="phase">② Tools &amp; skills · assembling an agent</div>
+    <h2>She wants the whole thing done — meet the agent</h2>
+    <div class="body">
+      <div class="flow">
+        <div class="node"><b>Model</b>the brain</div><span class="arr">+</span>
+        <div class="node"><b>Harness</b>the car</div><span class="arr">+</span>
+        <div class="node"><b>Tools</b>instruments</div><span class="arr">=</span>
+        <div class="node" style="background:var(--gold-soft);border-color:#e3cf9f"><b style="color:var(--gold)">Agent</b>a chauffeur</div>
+      </div>
+      <p>Put a brain inside a car (the <span class="accentword">harness</span> — software like Cowork) and hand it instruments, and you get an <span class="accentword">agent</span>: give it a goal and it plans the steps, uses the tools, and adjusts — like a chauffeur who just drives you to the airport.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>An agent <b>takes a goal and does the multi-step work</b> — a chatbot just talks.</div></div>
+  </section>
+
+  <!-- 11 SKILL -->
+  <section class="slide p2">
+    <div class="phase">② Tools &amp; skills · making it repeatable</div>
+    <h2>She writes it down so it repeats — a skill</h2>
+    <div class="body">
+      <p>The first run works — but Maya doesn't want to re-explain it every morning.</p>
+      <p>So she saves the instructions as a <span class="accentword">skill</span>: a documented, reusable routine — <em>"how we build the newsletter."</em> Define it once, and the agent runs it again and again. <b>This is the most powerful thing you'll customize.</b></p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>A skill is a <b>saved routine</b>: define the task once, reuse it forever.</div></div>
+  </section>
+
+  <!-- ===== DIVIDER 3 ===== -->
+  <section class="slide divider d3">
+    <div class="phase">Part three</div>
+    <div class="dnum">03</div>
+    <h2>How to use it well</h2>
+    <p class="dsub">The habits that turn a capable agent into real, safe value — and keep you in control. This is where the payoff lives.</p>
+    <span class="cando">⭐ The real value — this is <b>&nbsp;all you</b></span>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>The tool is only as good as the judgment of the person steering it.</div></div>
+  </section>
+
+  <!-- 12 DELEGATION -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · the 4 Ds</div>
+    <h2>Should AI do this part? — Delegation</h2>
+    <div class="body">
+      <p>Before handing off, Maya <span class="accentword">splits the task</span>:</p>
+      <ul>
+        <li><b>AI does</b> the legwork — scanning sources, drafting, formatting.</li>
+        <li><b>Maya keeps</b> the editorial voice and the call on sensitive stories.</li>
+        <li><b>She only feeds it public news</b> — never confidential data.</li>
+      </ul>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Delegation = <b>hand off the legwork, keep the judgment</b> (and protect private data).</div></div>
+  </section>
+
+  <!-- 13 DESCRIPTION -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · the 4 Ds</div>
+    <h2>Tell it what "good" looks like — Description</h2>
+    <div class="body">
+      <p>"Summarize the news" gives mush. Maya describes the job in three layers:</p>
+      <div class="layers">
+        <div class="c"><b>Product</b>A 5-story, ~300-word newsletter, each with a link.</div>
+        <div class="c"><b>Process</b>Scan these 6 sources → drop dupes → rank by relevance.</div>
+        <div class="c"><b>Performance</b>Sharp but friendly; never invent a source; flag if unsure.</div>
+      </div>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>The <b>clearer you describe the job</b>, the better the result — every time.</div></div>
+  </section>
+
+  <!-- 14 DISCERNMENT -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · the 4 Ds</div>
+    <h2>Read the draft like an editor — Discernment</h2>
+    <div class="body">
+      <p>Maya doesn't just skim — she checks:</p>
+      <ul>
+        <li>Are the links <em>real</em>?</li>
+        <li>Is anything stale or out of date?</li>
+        <li>Is it specific to her industry, or generic filler?</li>
+      </ul>
+      <p>Each fix she makes — <em>"never summarize an opinion piece as news"</em> — she adds back into the skill.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Always <b>judge the output before you trust it</b> — and feed your fixes back in.</div></div>
+  </section>
+
+  <!-- 15 DILIGENCE -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · the 4 Ds</div>
+    <h2>Maya signs off — Diligence</h2>
+    <div class="body">
+      <p>When the newsletter goes out, it goes out under <span class="accentword">Maya's name</span>. So she:</p>
+      <ul>
+        <li>Reviews it before sending.</li>
+        <li>Notes that AI helped, where that matters.</li>
+        <li>Has a plan to correct a mistake fast.</li>
+      </ul>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>You <b>own whatever ships under your name</b> — review, disclose, be ready to fix.</div></div>
+  </section>
+
+  <!-- 16 LOOP -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · the rhythm</div>
+    <h2>It's a loop, not a line</h2>
+    <div class="body">
+      <p>Maya's first draft wasn't perfect — and that's completely normal.</p>
+      <div class="flow">
+        <div class="node"><b>Describe</b>say what you want</div><span class="arr">→</span>
+        <div class="node"><b>Judge</b>check what came back</div><span class="arr">→</span>
+        <div class="node"><b>Refine</b>improve the instructions</div><span class="arr">↺</span>
+      </div>
+      <p>After a few rounds, the skill is reliable.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Great AI work is a <b>loop: describe, judge, refine — repeat</b> until it's right.</div></div>
+  </section>
+
+  <!-- 17 COPILOT vs AUTOPILOT -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · how far to go</div>
+    <h2>Co-pilot or autopilot?</h2>
+    <div class="body">
+      <p>There are two ways to use an agent:</p>
+      <div class="two">
+        <div class="col pilot"><h4>Co-pilot</h4>AI does the legwork; a human approves. <em>Where Maya starts.</em> Safe, fast wins.</div>
+        <div class="col auto"><h4>Autopilot</h4>The agent runs the whole loop alone — e.g. customer service that answers <em>and</em> refunds. More power, more risk.</div>
+      </div>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Start as <b>co-pilot</b>; move a task to autopilot only once it's earned trust.</div></div>
+  </section>
+
+  <!-- 18 SCHEDULE THE DRAFT -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · how far to go</div>
+    <h2>She schedules the draft (not the send)</h2>
+    <div class="body">
+      <p>Maya sets the agent to build the newsletter <span class="accentword">every morning at 6am</span> and drop a draft in her folder.</p>
+      <p>She still hits <em>publish</em> herself at 8 — until she's seen enough good drafts to trust it with more.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div><b>Schedule the draft, not the send</b> — keep a human on the publish button.</div></div>
+  </section>
+
+  <!-- 19 HALLUCINATION -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · where it nearly went wrong</div>
+    <h2>Near-miss #1: a link that goes nowhere</h2>
+    <div class="body">
+      <p>One draft cited <em>"a TechCrunch article"</em> — but the link 404'd. The model had <span class="accentword">invented</span> a plausible-sounding source.</p>
+      <p>Maya caught it only because she <em>checks</em>. This is called a <span class="accentword">hallucination</span>.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>AI can <b>invent sources that look real</b> — verify before you rely on them.</div></div>
+  </section>
+
+  <!-- 20 DATA -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · where it nearly went wrong</div>
+    <h2>Near-miss #2: the data she almost pasted</h2>
+    <div class="body">
+      <p>Maya nearly dropped a <span class="accentword">confidential customer list</span> into the tool to "personalize" the newsletter. She stopped herself.</p>
+      <ul>
+        <li>Never feed an AI tool private or proprietary data you wouldn't want stored.</li>
+        <li>And remember: <em>bad inputs → bad outputs</em>. Garbage in, garbage out.</li>
+      </ul>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Mind your inputs: <b>don't share private data</b>, and garbage in means garbage out.</div></div>
+  </section>
+
+  <!-- 21 STALE -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · where it nearly went wrong</div>
+    <h2>Near-miss #3: yesterday's news as today's</h2>
+    <div class="body">
+      <p>Without a live web tool, the agent leaned on its <span class="accentword">training memory</span> and served up an "update" that was months old.</p>
+      <p>For a newsletter, that's fatal. The fix: give it <em>live sources</em> and tell it to flag anything time-sensitive.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>For anything time-sensitive, <b>give AI live sources</b> — don't trust its memory.</div></div>
+  </section>
+
+  <!-- 22 PAYOFF -->
+  <section class="slide p3">
+    <div class="phase">③ How to use it · the payoff</div>
+    <h2>Maya, 90 days later</h2>
+    <div class="body">
+      <p>The newsletter runs itself every morning. Maya spends <span class="accentword">10 minutes reviewing</span> instead of 90 writing.</p>
+      <ul>
+        <li>She's spent the reclaimed time on campaigns only she can do.</li>
+        <li>And she's built <em>two more skills</em> the same way.</li>
+      </ul>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Fluency <b>compounds</b>: each skill you build frees time for work only you can do.</div></div>
+  </section>
+
+  <!-- 23 YOUR TURN -->
+  <section class="slide p3">
+    <div class="phase">🎯 Your turn</div>
+    <h2>Find your "Maya task"</h2>
+    <div class="body">
+      <p class="lead">Before the workshop, pick <span class="accentword">one repetitive thing</span> you'd love to wake up to already done.</p>
+      <p>That's what you'll build — start to finish, scheduled — in the next two hours.</p>
+    </div>
+    <div class="takeaway"><span class="tk">Takeaway</span><div>Bring <b>one repetitive task</b> to the workshop. We'll turn it into your first skill.</div></div>
+  </section>
+
+</div>
+
+<div class="controls">
+  <button id="prev" aria-label="Previous">‹</button>
+  <button class="ovbtn" id="ov" aria-label="Overview">☰ Overview</button>
+  <span class="counter"><span id="cur">1</span> / <span id="tot">23</span></span>
+  <button id="next" aria-label="Next">›</button>
+  <span class="hint">← → to navigate · O for overview</span>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="ovpanel">
+    <h3>Jump to a slide</h3>
+    <div class="ovgrid" id="ovgrid"></div>
+  </div>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const bar=document.getElementById('bar');
+  const cur=document.getElementById('cur');
+  document.getElementById('tot').textContent=slides.length;
+  let i=0;
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    cur.textContent=i+1;
+    bar.style.width=(i/(slides.length-1)*100)+'%';
+    document.getElementById('stage').scrollTop=0;
+  }
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.getElementById('prev').onclick=()=>show(i-1);
+
+  // overview (section dividers highlighted)
+  const overlay=document.getElementById('overlay');
+  const grid=document.getElementById('ovgrid');
+  slides.forEach((s,k)=>{
+    const t=s.querySelector('h1,h2').textContent;
+    const a=document.createElement('a');
+    if(s.classList.contains('divider'))a.classList.add('sec');
+    a.innerHTML='<span class="n">'+(k+1)+'</span><span>'+t+'</span>';
+    a.onclick=()=>{show(k);overlay.classList.remove('on')};
+    grid.appendChild(a);
+  });
+  function toggleOv(){overlay.classList.toggle('on')}
+  document.getElementById('ov').onclick=toggleOv;
+  overlay.onclick=e=>{if(e.target===overlay)overlay.classList.remove('on')};
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(i+1)}
+    else if(e.key==='ArrowLeft'){show(i-1)}
+    else if(e.key==='Home'){show(0)}
+    else if(e.key==='End'){show(slides.length-1)}
+    else if(e.key.toLowerCase()==='o'){toggleOv()}
+    else if(e.key==='Escape'){overlay.classList.remove('on')}
+  });
+  show(0);
+</script>
+</body>
+</html>
