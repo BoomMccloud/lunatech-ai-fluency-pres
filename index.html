@@ -25,9 +25,9 @@
 
   /* 1000px is the fixed "design" width; a JS scaler (--s) enlarges the whole
      card uniformly to fill the screen, so text gets bigger on bigger displays. */
-  .slide{display:none;width:1000px;min-height:560px;background:var(--card);
+  .slide{display:none;width:1000px;height:600px;background:var(--card);
     border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);
-    padding:46px 58px;flex-direction:column;justify-content:center;overflow:hidden;
+    padding:46px 58px;flex-direction:column;overflow:hidden;
     position:absolute;top:50%;left:50%;
     transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:center center}
   .slide.active{display:flex;animation:fade .34s ease}
@@ -38,7 +38,7 @@
      This anchors every content title to the same Y so they don't wander slide-to-slide. */
   .shead{flex:0 0 auto}
   .shead h1,.shead h2{margin:0}
-  .sbody{flex:0 1 auto;display:flex;flex-direction:column;justify-content:center}
+  .sbody{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center}
   .kicker{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;
     color:var(--muted);margin:0 0 11px}
   .p1 .kicker{color:var(--teal)} .p2 .kicker{color:var(--gold)} .p3 .kicker{color:var(--accent)}
@@ -73,7 +73,7 @@
     padding:10px 18px;font-size:clamp(15px,1.8vw,19px);color:var(--ink)}
   .cover-qr{
     position: absolute;
-    top: 50%;
+    top: 58%;
     right: 60px;
     transform: translateY(-50%);
     display: flex;
@@ -83,7 +83,7 @@
     max-width: 220px;
     text-align: center;
   }
-  .qr-label{font-size:13.5px;color:var(--muted);line-height:1.4;margin:0;font-weight:500}
+
 
   /* meet-maya example pills + the if/then payoff line */
   .examples{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
@@ -108,8 +108,8 @@
   /* the "piece" reveal slides: symptom → word → meaning */
   .symptom{font-size:clamp(22px,3vw,32px);color:var(--warn);font-weight:600;line-height:1.2;max-width:780px;margin:6px 0 18px}
   .symptom .q{color:var(--ink);font-style:italic}
-  .word{font-size:clamp(56px,10vw,116px);font-weight:800;letter-spacing:-.04em;line-height:.9;margin:8px 0 4px;color:var(--gold)}
-  .word small{display:block;font-size:clamp(20px,2.6vw,30px);font-weight:600;letter-spacing:0;color:var(--ink);margin-top:6px}
+  .word{font-size:clamp(56px,10vw,116px);font-weight:800;letter-spacing:-.04em;line-height:1.05;margin:8px 0 16px;color:var(--gold)}
+  .word small{display:block;font-size:clamp(20px,2.6vw,30px);font-weight:600;letter-spacing:0;color:var(--ink);margin-top:12px;line-height:1.35}
   .car{font-size:clamp(17px,2.1vw,22px);color:var(--muted);max-width:720px;margin-top:14px}
   .car b{color:var(--gold)}
 
@@ -121,6 +121,13 @@
   .flow .op{display:flex;align-items:center;font-size:30px;color:var(--muted);font-weight:300}
   .flow .agent{background:var(--gold-soft);border-color:#e3cf9f;box-shadow:0 8px 24px rgba(184,137,63,.25)}
   .flow .agent b{color:#84621f;font-size:clamp(22px,2.8vw,30px)}
+  /* slide 15 (the build): enlarge the boxes to fill the freed space */
+  .flow.build{gap:12px;margin:8px 0;width:100%;align-items:stretch}
+  .flow.build .node{flex:1 1 0;min-width:0;padding:40px 10px;min-height:210px;border-radius:20px}
+  .flow.build .node b{font-size:28px;letter-spacing:-0.02em;margin-bottom:8px}
+  .flow.build .node span{font-size:15px}
+  .flow.build .agent b{font-size:32px}
+  .flow.build .op{font-size:36px}
 
   /* named inner-loop box */
   .loopbox{border:2px dashed var(--teal);border-radius:18px;padding:12px 18px 18px;
@@ -203,6 +210,21 @@
   .outline-item.active h3{color:var(--teal)}
   .outline-item p{margin:0;font-size:clamp(14px,1.6vw,17px);color:var(--ink-soft);line-height:1.3}
 
+  /* take-home checklist (final slide) — clickable to tick off */
+  .checklist{display:flex;flex-direction:column;gap:6px;margin:0;width:100%;max-width:900px}
+  .check{display:grid;grid-template-columns:26px 1fr;gap:13px;align-items:center;cursor:pointer;
+    border:1px solid var(--line);border-radius:12px;padding:6px 16px;background:#fbf4ec;transition:background .2s ease}
+  .check .box{width:23px;height:23px;border:2px solid var(--accent);border-radius:6px;background:#fffdf9;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;line-height:1}
+  .check h3{margin:0;font-size:clamp(15px,1.7vw,19px);letter-spacing:-.01em}
+  .check h3 .src{color:var(--accent);font-weight:700;font-size:.72em;margin-left:7px;white-space:nowrap}
+  .check p{margin:1px 0 0;font-size:clamp(12px,1.4vw,14.5px);color:var(--muted);line-height:1.2}
+  .check.done{background:var(--teal-soft);border-color:#bcdbe1}
+  .check.done .box{background:var(--teal);border-color:var(--teal)}
+  .check.done .box::after{content:"✓"}
+  .check.done h3{text-decoration:line-through;text-decoration-color:#9bbcc4}
+  .check.done h3 .src{color:var(--teal)}
+
   /* QR close */
   .qrwrap{display:flex;gap:40px;align-items:center;flex-wrap:wrap;justify-content:center}
   .qr{width:clamp(170px,26vw,230px);height:clamp(170px,26vw,230px);border-radius:20px;border:3px solid var(--ink);
@@ -272,6 +294,26 @@
     display: flex !important;
   }
 
+  /* Expiry Date / Knowledge Cutoff Slide - Visual Interruption Style */
+  .slide.cutoff-slide {
+    background: #fdf6ee; /* subtle warm warning tint */
+    border-color: #ebdcc8;
+  }
+  .slide.cutoff-slide .kicker {
+    color: var(--warn) !important;
+  }
+  .slide.cutoff-slide .em {
+    color: var(--warn) !important;
+  }
+  .slide.cutoff-slide .car {
+    background: var(--warn-soft);
+    border-color: #f5c4b8;
+    color: var(--ink);
+  }
+  .slide.cutoff-slide .takeaway b {
+    color: var(--warn);
+  }
+
   .overlay{position:fixed;inset:0;background:rgba(33,28,22,.55);display:none;z-index:30;padding:40px 24px;overflow:auto}
   .overlay.on{display:block}
   .ovpanel{max-width:920px;margin:0 auto;background:var(--card);border-radius:18px;padding:24px 26px;box-shadow:var(--shadow)}
@@ -317,7 +359,6 @@
     </div>
     <div class="cover-qr">
       <img class="qr" src="whatsapp_qr.png" alt="WhatsApp Group QR Code">
-      <p class="qr-label">Scan to join the WhatsApp group &amp; receive ongoing support</p>
     </div>
   </section>
 
@@ -368,8 +409,18 @@
       <h2>What do we mean by <span class="em">AI fluency for business</span>?</h2>
       <p class="sub">Not coding, but <strong style="color:#d97756">handing</strong> real, repetitive work off to AI, and trusting what comes back.</p>
     </div>
-    <div class="sbody"></div>
-    <div class="foot">Easier shown than defined. So, meet Maya. →</div>
+    <div class="sbody">
+      <div class="two" style="margin-top:24px">
+        <div class="card t">
+          <h3>🤝 Hand off the legwork</h3>
+          <p>Automate the repetitive, rule-based chores that eat up your morning (scanning, drafting, formatting).</p>
+        </div>
+        <div class="card t">
+          <h3>👁️ Trust what comes back</h3>
+          <p>Apply critical judgment and editing standards to confidently own whatever ships under your name.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- 4 · MEET MAYA -->
@@ -381,14 +432,25 @@
       <p class="sub">A marketing coordinator. Every morning, she spends <b>90 minutes</b> reading industry news and writing a summary for her team.</p>
     </div>
     <div class="sbody">
-      <div class="examples">
-        <span class="ex">📊 the Monday metrics email</span>
-        <span class="ex">📝 the weekly status report</span>
-        <span class="ex">📥 inbox triage</span>
-        <span class="ex">🗒️ standup notes</span>
+      <div class="grid4" style="margin-top:24px">
+        <div class="card">
+          <h3>📊 Monday Metrics</h3>
+          <p>Compiling stats and numbers from three systems into a weekly report.</p>
+        </div>
+        <div class="card">
+          <h3>📝 Weekly Status</h3>
+          <p>Gathering bullet points and formatting them into a standard team email.</p>
+        </div>
+        <div class="card">
+          <h3>📥 Inbox Triage</h3>
+          <p>Scanning incoming support or request emails and drafting replies.</p>
+        </div>
+        <div class="card">
+          <h3>🗒️ Meeting Notes</h3>
+          <p>Transcribing or summarizing raw meeting audio into action items.</p>
+        </div>
       </div>
     </div>
-    <div class="foot">Different title, same chore, in every department. →</div>
   </section>
 
   <!-- 5 · THE MATH (variant: hero, centered) -->
@@ -406,7 +468,6 @@
       </div>
       <p class="payoff">80 minutes back, every workday <b>≈ 9 weeks of your year.</b></p>
     </div>
-    <div class="foot">A big "if." <b>So how?</b> →</div>
   </section>
 
   <!-- 6 · THE 4 R's -->
@@ -446,7 +507,7 @@
       <p class="symptom">Maya asks a chatbot to summarize the news.</p>
       <p class="symptom"><span class="q">It hands her a confident "fact" that's flat-out false.</span></p>
       <div class="word" style="color:var(--gold)">Model<small>the brain · predicts the next word</small></div>
-      <p class="car"><b>Fluent ≠ correct.</b><br><span style="color:var(--gold)">🚗</span> A driver who always sounds certain about directions, even when guessing.</p>
+      <p class="car"><span style="color:var(--gold)">🚗</span> A driver who always sounds certain about directions, even when guessing.</p>
     </div>
   </section>
 
@@ -458,7 +519,7 @@
       <p class="symptom">"Just search Google."</p>
       <p class="symptom"><span class="q">It writes her step-by-step instructions instead of doing it.</span></p>
       <div class="word" style="color:var(--gold)">Harness<small>the car · the body that takes real steps</small></div>
-      <p class="car"><b>The brain needs a body.</b><br><span style="color:var(--gold)">🚗</span> A brilliant driver with no car: knows every route, can't move an inch.</p>
+      <p class="car"><span style="color:var(--gold)">🚗</span> A brilliant driver with no car: knows every route, can't move an inch.</p>
     </div>
   </section>
 
@@ -470,12 +531,12 @@
       <p class="symptom">"Only today's stories."</p>
       <p class="symptom"><span class="q">It doesn't even know what day it is.</span></p>
       <div class="word" style="color:var(--gold)">Tools<small>the instruments · web, files, inbox, the date</small></div>
-      <p class="car"><b>You choose which to connect.</b><br><span style="color:var(--gold)">🚗</span> A car with no GPS or phone: you can drive, but you can't look anything up.</p>
+      <p class="car"><span style="color:var(--gold)">🚗</span> A car with no GPS or phone: you can drive, but you can't look anything up.</p>
     </div>
   </section>
 
   <!-- 10 · KNOWLEDGE CUTOFF -->
-  <section class="slide p2" data-part="2"
+  <section class="slide p2 cutoff-slide" data-part="2"
     data-notes="THE DEEPER REASON TOOLS MATTER: placed right after Tools on purpose. It's not just that it doesn't know today's date. The brain itself has a KNOWLEDGE CUTOFF: a model learned from data up to a fixed point and knows nothing since, and it won't tell you it's out of date. It'll describe last year's world with total confidence. THIS is why Maya can't trust its memory for 'today's news': she has to feed it live tools. (Aside, only if asked: some models are 'multimodal', they can read images and hear audio. A capability, not today's point.)">
     <div class="shead">
       <div class="kicker">How it works · why tools matter</div>
@@ -483,7 +544,16 @@
       <p class="sub">A model is frozen in time. It knows nothing since its cutoff, and it will never warn you that its memory is out of date.</p>
     </div>
     <div class="sbody">
-      <p class="car" style="max-width:760px"><span style="color:var(--gold)">🚗</span> It learned the city a year ago, so it doesn't know the road that opened last week.</p>
+      <div class="two" style="margin-top:24px">
+        <div class="card w">
+          <h3>🧠 Stale Memory (Frozen)</h3>
+          <p>The brain has an expiry date. Confidently invents information or serves outdated answers for anything past its cutoff.</p>
+        </div>
+        <div class="card t">
+          <h3>🔌 Live Tools (Connected)</h3>
+          <p>Reaches out to the live web, current files, and active integrations to fetch fresh, real-time facts when needed.</p>
+        </div>
+      </div>
     </div>
     <div class="takeaway"><b>That's why Maya feeds it live tools</b> for anything time-sensitive.</div>
   </section>
@@ -496,7 +566,7 @@
       <p class="symptom">Day two...</p>
       <p class="symptom"><span class="q">She re-explains everything, and gets something different.</span></p>
       <div class="word" style="color:var(--gold)">Skills<small>known routes · a saved, reusable routine</small></div>
-      <p class="car"><b>Define once, reuse forever.</b><br><span style="color:var(--gold)">🚗</span> A driver who'd otherwise forget the route to the airport every single day.</p>
+      <p class="car"><span style="color:var(--gold)">🚗</span> A driver who'd otherwise forget to pick you up again the next day.</p>
     </div>
   </section>
 
@@ -508,7 +578,7 @@
       <p class="symptom">When she takes the day off...</p>
       <p class="symptom"><span class="q">Nothing happens. No newsletter goes out.</span></p>
       <div class="word">Agent<small>the chauffeur · takes a goal, drives every step</small></div>
-      <p class="car"><b>A chatbot talks. An agent does the work.</b><br><span style="color:var(--gold)">🚗</span> You don't want directions: you want someone who drives you to the airport.</p>
+      <p class="car"><span style="color:var(--gold)">🚗</span> You don't want directions: you want someone who drives you to the airport.</p>
     </div>
   </section>
 
@@ -520,7 +590,7 @@
       <h2>Five pieces → one <span class="em">chauffeur</span></h2>
     </div>
     <div class="sbody">
-      <div class="flow">
+      <div class="flow build">
         <div class="node"><b>Model</b><span>the brain</span></div><div class="op">+</div>
         <div class="node"><b>Harness</b><span>the car</span></div><div class="op">+</div>
         <div class="node"><b>Tools</b><span>instruments</span></div><div class="op">+</div>
@@ -528,7 +598,6 @@
         <div class="node agent"><b>Agent</b><span>a chauffeur</span></div>
       </div>
     </div>
-    <div class="takeaway">That's the entire vocabulary of AI. <b>Five words.</b></div>
   </section>
 
   <!-- ===== DIVIDER 3 (variant: divider) ===== -->
@@ -556,7 +625,6 @@
         <div class="card a"><h3>Diligence <small>outer loop</small></h3><p>Own whatever ships under your name.</p></div>
       </div>
     </div>
-    <div class="takeaway">Two nest inside two. <b style="color:#9a4a25">Outer (once per task): Delegate → Own.</b> &nbsp;<b style="color:var(--teal)">Inner (minute-to-minute): Describe ⇄ Discern.</b></div>
   </section>
 
   <!-- 15 · OUTER LOOP: the container -->
@@ -579,7 +647,7 @@
       </div>
       <p class="loopwhat"><b>What it does:</b> decide whether to trust AI with the task at all → run the work → then own whatever ships.</p>
     </div>
-    <div class="takeaway"><b style="color:#9a4a25">Objective:</b> delegate safely, stay accountable. We'll walk it left to right.</div>
+    <div class="takeaway"><b style="color:#9a4a25">Objective:</b> start small—choose a low-risk task, not a core business flow.</div>
   </section>
 
   <!-- 16 · DELEGATION  (loop slide: breadcrumb is the kicker) -->
@@ -602,7 +670,7 @@
         <div class="col auto"><h3>Autopilot</h3><p>The agent runs the whole loop alone. More power, more risk: earn it one task at a time.</p></div>
       </div>
     </div>
-    <div class="takeaway"><b>Schedule the draft, not the send.</b> It builds at 6am; Maya still hits publish at 8.</div>
+    <div class="takeaway"><b style="color:#9a4a25">Objective:</b> assign a project champion and DRI to drive the change.</div>
   </section>
 
   <!-- 17 · INNER LOOP: the engine (loop slide) -->
@@ -653,7 +721,7 @@
         <div class="card a"><h3>Style <small>how it should read</small></h3><p>Sharp but friendly. Never invent a source. Flag if unsure.</p></div>
       </div>
     </div>
-    <div class="takeaway">Same model. Far better output. <b>The difference is the description</b>, but the first try is rarely the last.</div>
+    <div class="takeaway"><b style="color:var(--teal)">Objective:</b> you decide what good looks like, don't leave it to the AI.</div>
   </section>
 
   <!-- 19 · DISCERNMENT  (loop slide) -->
@@ -678,12 +746,12 @@
       </div>
       <p class="loopobj" style="color:var(--teal);margin-top:18px">↺ She folds each fix back into the skill, <b>"never summarize an opinion piece as news"</b>, then describes again, smarter.</p>
     </div>
-    <div class="takeaway">A few rounds in, <b>the skill runs reliable.</b></div>
+    <div class="takeaway"><b style="color:var(--teal)">Objective:</b> make rigorous evaluation your new core process.</div>
   </section>
 
   <!-- 20 · DILIGENCE  (loop slide) -->
   <section class="slide p3" data-part="3"
-    data-notes="DILIGENCE: the second bookend of the outer loop, and the one that keeps you safe. The inner loop got the work right; now you step back out and OWN it. Whatever AI produces ships under YOUR name, not the AI's. Three habits: REVIEW before it ships (you're the last set of eyes); BE TRANSPARENT, disclose AI's role where it matters (a client deliverable, a sensitive call); STAY ABLE TO FIX IT FAST, keep an off-switch and a correction path. For Maya: she reads every issue, notes AI's help where it counts, and can pull or correct a bad newsletter within minutes. The AI is never accountable: she is. That completes the outer loop.">
+    data-notes="DILIGENCE: The outer loop bookend. Here, you look at the big picture. While Discernment requires you to be strict and critical of the details, Diligence is about being flexible with the overall process. Focus on the actual business flow and ROI: Is this saving time? Is it creating value? Don't micro-manage every single word in this phase—instead, make sure your high-level checks (review, transparency, off-switch) are in place to support the overall business process safely. You are accountable, not the AI, but stay flexible to let it scale.">
     <div class="shead">
       <div class="loopnav">
         <span class="seg">Delegation</span>
@@ -702,7 +770,7 @@
         <div class="card a"><h3>Fixable fast <small>keep an off-switch</small></h3><p>Spot a mistake and correct or pull it within minutes.</p></div>
       </div>
     </div>
-    <div class="takeaway"><b>You're accountable, not the AI.</b></div>
+    <div class="takeaway"><b style="color:#9a4a25">Objective:</b> be flexible with the business process, be strict with the Discern step.</div>
   </section>
 
   <!-- 21 · PITFALLS -->
@@ -752,7 +820,6 @@
         <div class="tn"><div class="n">3</div><div><h3>What "done" looks like</h3><p>You, as co-pilot: reviewing a draft instead of writing from scratch.</p></div></div>
       </div>
     </div>
-    <div class="foot">90 days in, Maya's newsletter runs itself, and she's built two more the same way.</div>
   </section>
 
   <!-- 23 · QR CLOSE  (variant: close) -->
@@ -767,7 +834,37 @@
         </div>
       </div>
     </div>
-    <div class="foot"><b>↑ Scan to join the WhatsApp group.</b></div>
+  </section>
+
+  <!-- 24 · TAKE-HOME CHECKLIST -->
+  <section class="slide p3" data-part="4"
+    data-notes="THE TAKE-HOME CHECKLIST: the whole talk turned into six actions for the task they picked back on the 4 R's slide. Tell them to screenshot it. Each box maps to something we taught, in the order you actually do it: pick (4 R's) -> set the terms (Delegation: co-pilot, public data, tools) -> describe (3 layers) -> judge and refine into a skill (Discernment + Skills) -> own what ships (Diligence) -> only then automate (schedule the draft, mind the pitfalls). The boxes are clickable if you want to demo ticking them off.">
+    <div class="shead">
+      <div class="kicker">Take-home checklist</div>
+      <h2>Your task, <span class="em">one box at a time</span></h2>
+    </div>
+    <div class="sbody">
+      <div class="checklist">
+        <div class="check"><span class="box"></span><div class="tx">
+          <h3>Pick the task <span class="src">4 R's</span></h3>
+          <p>Repetitive, rule-ish, reviewable, reversible — the one you chose earlier.</p></div></div>
+        <div class="check"><span class="box"></span><div class="tx">
+          <h3>Set the terms <span class="src">Delegation</span></h3>
+          <p>Start as co-pilot, feed it only public data, and connect the tools it needs.</p></div></div>
+        <div class="check"><span class="box"></span><div class="tx">
+          <h3>Describe what "good" looks like <span class="src">Description</span></h3>
+          <p>Three layers — what you want · how to make it · the style (never invent, flag if unsure).</p></div></div>
+        <div class="check"><span class="box"></span><div class="tx">
+          <h3>Judge it, then refine <span class="src">Discernment + Skills</span></h3>
+          <p>Edit it like a draft — real? fresh? specific? Fold each fix back in, then save it as a skill.</p></div></div>
+        <div class="check"><span class="box"></span><div class="tx">
+          <h3>Schedule a periodic review <span class="src">Diligence</span></h3>
+          <p>On a recurring cadence: re-read what shipped, disclose AI's role where it matters, keep an off-switch.</p></div></div>
+        <div class="check"><span class="box"></span><div class="tx">
+          <h3>Only then, automate <span class="src">Pitfalls</span></h3>
+          <p>Once it's reliable, schedule the draft (not the send) — and watch the four pitfalls.</p></div></div>
+      </div>
+    </div>
   </section>
 
 </div>
@@ -884,6 +981,8 @@
     else if(e.key.toLowerCase()==='h'){toggleControls()}
     else if(e.key==='Escape'){overlay.classList.remove('on')}
   });
+  // checklist: click a row to tick it off
+  document.querySelectorAll('.check').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('done')));
   show(0);
 </script>
 </body>
