@@ -1,8 +1,8 @@
-# A Day with Your AI Chauffeur — Teaching Deck
+# A Day with Your AI Chauffeur: Teaching Deck
 
 An interactive, self-contained HTML slide deck that teaches AI fluency to complete beginners through one person's story (Maya) and one running example (a daily industry newsletter).
 
-- **One file, no dependencies** — everything is in `index.html`.
+- **One file, no dependencies**: everything is in `index.html`.
 - **Navigation:** `←` / `→` (or the on-screen arrows) to move; `O` for the overview/jump menu.
 - **26 slides** across an agenda + three color-coded parts: ① Under the hood, ② Tools & skills, ③ How to use it.
 
